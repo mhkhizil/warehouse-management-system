@@ -5,27 +5,29 @@ import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import useItem from "@/firebase/customhooks/useItem";
-import { getItems } from "@/firebase/customhooks/getItems";
+
 import ShowPage from "./components/showPage";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const { addItems, getItems,deleteItem } = useItem();
+  const { addItems, getItems,deleteItem,updateItem } = useItem();
    const [itemData1, setItemData1] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const { getItems } = useItem();
-      try {
-        const [data] = await getItems("item");
-        setItemData1(data?.data)// Here you can access the mapped data
-      } catch (error) {
-        console.error("Error fetching items:", error);
-      }
-    };
+   //fetch data sample logic
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const { getItems } = useItem();
+  //     try {
+  //       const [data] = await getItems("item");
+  //       setItemData1(data?.data)// Here you can access the mapped data
+  //     } catch (error) {
+  //       console.error("Error fetching items:", error);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
+  //add item sample logic
   const handleAddItem = async () => {
     try {
       const newItem = {
@@ -43,21 +45,35 @@ export default function Home() {
       // Handle error
     }
   };
-  const deleteItemHandler = async (targetItemId:string) => {
+  //delete item sample logic
+  // const deleteItemHandler = async (targetItemId:string) => {
+  //   try {
+  //     const result = await deleteItem("item", targetItemId,'base'); // Assuming deleteItem is imported correctly
+  //     console.log(result); // Item deleted successfully!
+  //   } catch (error) {
+  //     console.error("Error deleting item:", error);
+  //   }
+  // };
+  const handleUpdate = async (targetItemId:string) => {
     try {
-      const result = await deleteItem("item", targetItemId,'base'); // Assuming deleteItem is imported correctly
-      console.log(result); // Item deleted successfully!
+      const result = await updateItem(
+        "item",
+        targetItemId,
+        {  name: "Updated name" },
+        "base"
+      );
+      console.log(result); // Item updated successfully.
     } catch (error) {
-      console.error("Error deleting item:", error);
+      console.error("Error updating item:", error);
     }
   };
-
   return (
     <main>
       This is home page
       <Link href={"/items"}>items</Link>
       <button onClick={handleAddItem}>Add Item</button>
-      <ShowPage deleteHandler={deleteItemHandler} headings={["name", "image", "description"]} body={itemData1} />
+      <button onClick={()=>handleUpdate("9b298c83-3f8d-49b1-a2a5-143c58489532")}>edit Item</button>
+      {/* <ShowPage deleteHandler={deleteItemHandler} headings={["name", "image", "description"]} body={itemData1} /> */}
     </main>
   );
 }
